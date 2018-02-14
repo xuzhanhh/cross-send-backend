@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css">
+  <title>Document</title>
+</head>
+<body>
+    <input id="upload" type="file">
+    <div>
+      <span id="downloadInfo"></span><a id="download" download="123.png">现在还不可以下载</a>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="client1.bundle.js"></script>
+    <script>
+       navigator.serviceWorker
+             .register('./sw.js')
+             .then(function() { console.log('Service Worker Registered'); });
+    </script>
+</body>
+</html>

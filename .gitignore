@@ -1,1 +1,7 @@
 node_modules/
+public/
+src/ca_bundle.crt
+src/certificate.crt
+src/private.key
+src/server.crt
+src/server.key

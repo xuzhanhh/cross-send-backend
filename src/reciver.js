@@ -1,5 +1,5 @@
 
-let socket = io('https://192.168.43.32:443/get', { secure: true });
+let socket = io('http://localhost:4000/get', { secure: true });
 console.log('socket', socket)
 const upload = document.getElementById('upload')
 const downloadInfo = document.getElementById('downloadInfo')

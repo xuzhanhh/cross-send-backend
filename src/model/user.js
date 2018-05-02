@@ -2,8 +2,13 @@ const Sequelize = require('sequelize');
 const sequelize = new Sequelize('crosssend', 'root', 'kbcici3146', {
   host: '127.0.0.1',
   dialect: 'mysql',
-  operatorsAliases: false,
-
+  // operatorsAliases: false,
+  dialectOptions: {
+    charset: "utf8mb4",
+    collate: "utf8mb4_unicode_ci",
+    supportBigNumbers: true,
+    bigNumberStrings: true
+},
   pool: {
     max: 5,
     min: 0,
@@ -31,7 +36,7 @@ const UserModel = sequelize.define('userTest3', {
   }
 });
 
-const beeBoxModel = sequelize.define('beebox',{
+const beeBoxModel = sequelize.define('beebox', {
   fileName: {
     type: Sequelize.STRING,
     length: 255,
@@ -42,19 +47,33 @@ const beeBoxModel = sequelize.define('beebox',{
     length: 255,
     allowNull: false,
   },
+  key: {
+    type: Sequelize.STRING,
+    length: 255,
+    allowNull: false,
+  },
+  lastModified: {
+    type: Sequelize.STRING,
+    length: 255,
+    allowNull: false,
+  },
   sender: {
     type: Sequelize.STRING,
     length: 255,
-    allowNull: false,
+    allowNull: true,
   },
-  receiver:{
+  receiver: {
+    type: Sequelize.STRING,
+    length: 255,
+    allowNull: true,
+  },
+  authCode: {
     type: Sequelize.STRING,
     length: 255,
     allowNull: false,
   },
-  authCode:{
-    type: Sequelize.STRING,
-    length: 255,
+  isUsed: {
+    type: Sequelize.BOOLEAN,
     allowNull: false,
   }
 })

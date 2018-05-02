@@ -1,8 +1,7 @@
 // 临时密钥计算样例
 
-var http = require('http');
 var crypto = require('crypto');
-var request = require('request');
+var request = require('request-promise');
 
 // 配置参数
 var config = {
@@ -48,7 +47,7 @@ var util = {
 };
 
 // 拼接获取临时密钥的参数
-var getTempKeys = function (callback) {
+var getTempKeys = async function (callback) {
 
     // 判断是否修改了 AllowPrefix
     if (config.AllowPrefix === '_ALLOW_DIR_/*') {
@@ -156,7 +155,7 @@ var getTempKeys = function (callback) {
         },
         proxy: config.Proxy || '',
     };
-    request(opt, function (err, response, body) {
+    await request(opt, function (err, response, body) {
         body = body && JSON.parse(body);
         var data = body.data;
         tempKeysCache = data;
@@ -266,3 +265,6 @@ function getParam(url, name) {
 
 exports.getParam = getParam
 exports.getAuthorization = getAuthorization
+exports.getTempKeys = getTempKeys
+
+

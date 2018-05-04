@@ -18,8 +18,10 @@ var crypto = require('crypto');
 var request = require('request-promise');
 // let request = require('async-request')
 const sql = require(__dirname + '/model/user')
+const Op = require('sequelize').Op;
 const UserModel = sql.UserModel
 const beeBoxModel = sql.beeBoxModel
+const friendModel = sql.friendModel
 const sts = require('./sts-auth')
 var bcrypt = require('bcryptjs');
 const mail = require('./mail')
@@ -253,12 +255,54 @@ router
   .post('/xauth/login', function (ctx, next) {
     return passport.authenticate('local', function (err, user, info, status) {
       if (user) {
-        ctx.body = { 'code': 0, 'message': '登陆成功', username: user.username, userid: user.id }
+        ctx.body = { 'code': 0, 'message': '登陆成功', username: user.username, userid: user.id, nickname: user.nickname }
         return ctx.login(user)
       } else {
         ctx.body = info
       }
     })(ctx, next)
+  })
+  .post('/showFriends', async function (ctx, next) {
+    if (ctx.isAuthenticated()) {
+      const { userId } = ctx.request.body
+      let data = await sql.sequelize.query(`select userTest3s.* from friends, userTest3s where friends.from='${userId}' and friends.to = userTest3s.id`)
+      ctx.response.body = { code: 0, data }
+    } else {
+      ctx.response.body = { code: -1, errMessage: '请登录' }
+    }
+  })
+  .post('/showUser', async function (ctx, next) {
+    console.log('showUser')
+    if (ctx.isAuthenticated()) {
+      const { keyword } = ctx.request.body
+      let data = await UserModel.findAll({
+        where: {
+          nickname: {
+            [Op.like]: `%${keyword}%`,
+          }
+        }
+      }).then(result => result)
+      console.log('data*************', data)
+      ctx.response.body = { code: 0, userInfo: data }
+    } else {
+
+    }
+  })
+  .post('/addFriend', async function (ctx, next) {
+    if (ctx.isAuthenticated()) {
+      const { from, to } = ctx.request.body
+      let original = await friendModel.create({
+        from: from,
+        to: to
+      })
+      let reverse = friendModel.create({
+        from: to,
+        to: from
+      })
+      ctx.response.body = { code: 0, data: { original: original, reverse: reverse } }
+    } else {
+      ctx.response.body = { code: -1, errMessage: '请登录' }
+    }
   })
   .post('/xauth/register', async function (ctx, next) {
 
@@ -269,12 +313,13 @@ router
     let data = await UserModel.create({
       username: ctx.request.body.username,
       email: ctx.request.body.email,
-      password: hash
+      password: hash,
+      nickname: ctx.request.body.nickname,
     })
     // console.log(data)
     return passport.authenticate('local', function (err, user, info, status) {
       if (user) {
-        ctx.body = { 'code': 0, 'message': '登陆成功', username: user.username, userid: user.id }
+        ctx.body = { 'code': 0, 'message': '登陆成功', username: user.username, userid: user.id, nickname: user.nickname }
         return ctx.login(user)
       } else {
         ctx.body = info

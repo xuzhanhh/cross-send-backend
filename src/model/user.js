@@ -8,7 +8,7 @@ const sequelize = new Sequelize('crosssend', 'root', 'kbcici3146', {
     collate: "utf8mb4_unicode_ci",
     supportBigNumbers: true,
     bigNumberStrings: true
-},
+  },
   pool: {
     max: 5,
     min: 0,
@@ -33,8 +33,26 @@ const UserModel = sequelize.define('userTest3', {
     type: Sequelize.STRING,
     length: 255,
     allowNull: false,
+  },
+  nickname: {
+    type: Sequelize.STRING,
+    length: 255,
+    allowNull: true,
   }
 });
+const friendModel = sequelize.define('friend', {
+  from: {
+    type: Sequelize.STRING,
+    length: 255,
+    allowNull: false,
+  },
+  to: {
+    type: Sequelize.STRING,
+    length: 255,
+    allowNull: false,
+  }
+})
+
 
 const beeBoxModel = sequelize.define('beebox', {
   fileName: {
@@ -79,8 +97,10 @@ const beeBoxModel = sequelize.define('beebox', {
 })
 UserModel.sync({ force: false });
 beeBoxModel.sync({ force: false });
+friendModel.sync({ force: false })
 console.log(UserModel)
 //  export { sequelize, UserModel}
 exports.sequelize = sequelize
 exports.UserModel = UserModel
 exports.beeBoxModel = beeBoxModel
+exports.friendModel = friendModel

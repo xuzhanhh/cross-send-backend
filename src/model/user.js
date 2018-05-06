@@ -52,6 +52,23 @@ const friendModel = sequelize.define('friend', {
     allowNull: false,
   }
 })
+const messageModel = sequelize.define('message',{
+  from: {
+    type: Sequelize.STRING,
+    length: 255,
+    allowNull: false,
+  },
+  to: {
+    type: Sequelize.STRING,
+    length: 255,
+    allowNull: false,
+  },
+  message: {
+    type: Sequelize.STRING,
+    length: 255,
+    allowNull: false,
+  }
+})
 
 
 const beeBoxModel = sequelize.define('beebox', {
@@ -98,9 +115,11 @@ const beeBoxModel = sequelize.define('beebox', {
 UserModel.sync({ force: false });
 beeBoxModel.sync({ force: false });
 friendModel.sync({ force: false })
+messageModel.sync({ force: false })
 console.log(UserModel)
 //  export { sequelize, UserModel}
 exports.sequelize = sequelize
 exports.UserModel = UserModel
 exports.beeBoxModel = beeBoxModel
 exports.friendModel = friendModel
+exports.messageModel = messageModel

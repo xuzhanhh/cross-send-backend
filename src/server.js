@@ -27,6 +27,7 @@ var bcrypt = require('bcryptjs');
 const mail = require('./mail')
 
 let router = new Router();
+exports.router = router
 // 认证相关
 const passport = require(__dirname + '/passport_config.js')
 var certOptions = {
@@ -300,6 +301,43 @@ router
         to: from
       })
       ctx.response.body = { code: 0, data: { original: original, reverse: reverse } }
+    } else {
+      ctx.response.body = { code: -1, errMessage: '请登录' }
+    }
+  })
+  .post('/postMessage', async function (ctx, next) {
+    if (ctx.isAuthenticated()) {
+      const { from, to, message } = ctx.request.body
+      console.log(from, to, message)
+      let ret = await sql.messageModel.create(
+        {
+          from: from,
+          to: to,
+          message
+        }
+      )
+      ctx.response.body = { code: 0, data: { message: ret } }
+    } else {
+      ctx.response.body = { code: -1, errMessage: '请登录' }
+    }
+  })
+  .post('/findMessage', async function (ctx, next) {
+    if (ctx.isAuthenticated()) {
+      const { from, to } = ctx.request.body
+      let fromMessage = await sql.messageModel.findAll({
+        where: {
+          from: from,
+          to: to,
+        }
+      })
+      let toMessage = await sql.messageModel.findAll({
+        where: {
+          from: to,
+          to: from,
+        }
+      })
+      let message = [...fromMessage, ...toMessage]
+      ctx.response.body = { code: 0, data: { message } }
     } else {
       ctx.response.body = { code: -1, errMessage: '请登录' }
     }
